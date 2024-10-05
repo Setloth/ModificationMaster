@@ -1,0 +1,9 @@
+name: ModificationMaster
+version: '1.1'
+main: me.setloth.modificationMaster.ModificationMaster
+api-version: '1.21'
+authors: [ Setloth ]
+commands:
+  sort:
+    usage: /sort [block]
+    description: Sorts your inventory or the target chest
