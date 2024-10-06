@@ -1,6 +1,7 @@
 package me.setloth.modificationMaster.commands;
 
 import me.setloth.modificationMaster.util.Utility;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
@@ -23,7 +24,12 @@ public class Sort implements CommandExecutor, TabCompleter {
     Inventory inv = p.getInventory();
 
     if (strings.length > 0 && strings[0].equalsIgnoreCase("block")) {
-      Block b = p.getTargetBlock(null, 100);
+
+      // Use getTargetBlockExact to avoid issues with deprecated methods
+      Block b = p.getTargetBlockExact(100, FluidCollisionMode.NEVER);
+
+      if (b == null) return false;  // No block found within range
+
       BlockState bs = b.getState();
 
       if (!(bs instanceof Container c)) return false;

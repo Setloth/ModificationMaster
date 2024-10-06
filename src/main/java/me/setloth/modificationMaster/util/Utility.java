@@ -4,21 +4,14 @@ import java.util.*;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class Utility {
 
-  public static boolean isAxe(Material m) {
-    String mstring = m.toString();
-    return mstring.endsWith("_AXE");
-  }
-
-  public static boolean isPickaxe(Material m) {
-    String mstring = m.toString();
-    return mstring.endsWith("_AXE");
-  }
 
   public static boolean isWood(Material m) {
     String mstring = m.toString();
@@ -30,26 +23,44 @@ public class Utility {
     return mstring.endsWith("_ORE");
   }
 
-  public static void destroyBranch(Block block, ItemStack stack, boolean down) {
-    // traverse upwards (if !down) + (left | right) on branch and destroy all blocks that are the
-    // same by
-    // recursion i.e. each time you find a block that matches, recurse where that block breaks
-    // and looks for blocks that are the same
 
-    Material bt = block.getType();
-    boolean b = block.breakNaturally(stack);
-    if (!b) return; // couldnt break
+  public static void destroyBranch(Player p, Block startBlock, boolean down) {
+    Material blockType = startBlock.getType();  // Type of block to match
+    Set<Block> visited = new HashSet<>();  // Tracks blocks we've already processed
+    Deque<Block> toVisit = new ArrayDeque<>();  // BFS queue to process blocks layer by layer (ArrayDeque is used for efficiency)
 
-    for (int x = -1; x <= 1; x++) {
-      for (int y = (down ? -1 : 0); y <= 1; y++) {
-        for (int z = -1; z <= 1; z++) {
-//          if (x == 0 && y == 0 && z == 0) continue;
-          Block bb = block.getRelative(x, y, z);
-          if (bb.getType().equals(bt)) destroyBranch(bb, stack, down);
+    // Initialize with the starting block
+    toVisit.add(startBlock);
+    visited.add(startBlock);
+
+    while (!toVisit.isEmpty()) {
+      Block currentBlock = toVisit.poll();  // Remove and process the current block
+
+      // Ensure the block type still matches
+      if (!currentBlock.getType().equals(blockType)) continue;
+
+      // Try to break the block
+      boolean broken = p.breakBlock(currentBlock);
+      if (!broken) continue;  // If the block couldn't be broken, skip it
+
+      // Check all adjacent blocks within a 3x3x3 cube around the current block
+      for (int x = -1; x <= 1; x++) {
+        for (int y = (down ? -1 : 0); y <= 1; y++) {  // If 'down' is true, check below
+          for (int z = -1; z <= 1; z++) {
+            // Skip the current block itself (x == 0, y == 0, z == 0)
+            if (x == 0 && y == 0 && z == 0) continue;
+
+            Block neighbor = currentBlock.getRelative(x, y, z);
+
+            // If the neighbor is the same block type and hasn't been visited, add it to the deque
+            if (!visited.contains(neighbor) && neighbor.getType().equals(blockType)) {
+              toVisit.add(neighbor);  // Add to the end of the deque
+              visited.add(neighbor);  // Mark it as visited immediately to avoid re-adding it
+            }
+          }
         }
       }
     }
-
   }
 
   /**
@@ -58,29 +69,44 @@ public class Utility {
    * @param items      the ItemStack array to sort and combine
    * @return the sorted and combined ItemStack array
    */
+  @SuppressWarnings("all")
   public static ItemStack[] sortAndCombine(ItemStack[] items) {
-    // Map to store item counts
-    Map<Material, Integer> materialCount = new HashMap<>();
+    // Map to store item counts with metadata as the key
+    Map<ItemStack, Integer> itemCount = new HashMap<>();
 
-    // Count items
+    // Count items with respect to metadata
     for (ItemStack item : items) {
       if (item != null && item.getType() != Material.AIR) {
-        materialCount.put(item.getType(), materialCount.getOrDefault(item.getType(), 0) + item.getAmount());
+        boolean found = false;
+
+        // Try to find an existing item stack with the same metadata
+        for (ItemStack key : itemCount.keySet()) {
+          if (areItemStacksEqual(key, item)) {
+            itemCount.put(key, itemCount.get(key) + item.getAmount());
+            found = true;
+            break;
+          }
+        }
+
+        // If no matching item stack was found, add it as a new key
+        if (!found) {
+          itemCount.put(item.clone(), item.getAmount());
+        }
       }
     }
 
-    // Create a sorted array of materials based on their counts
-    Material[] sortedMaterials = materialCount.keySet().toArray(new Material[0]);
-    Arrays.sort(sortedMaterials, Comparator.comparingInt(materialCount::get).reversed());
+    // Create a sorted array of item stacks based on their counts
+    ItemStack[] sortedItems = itemCount.keySet().toArray(new ItemStack[0]);
+    Arrays.sort(sortedItems, Comparator.comparingInt(itemCount::get).reversed());
 
     // Prepare a list to hold combined item stacks
-    ItemStack[] combinedItems = new ItemStack[materialCount.size() * 64]; // Max possible stacks to avoid index out of bounds
+    ItemStack[] combinedItems = new ItemStack[itemCount.size() * 64]; // Max possible stacks
     int index = 0;
 
     // Fill combinedItems array with item stacks, respecting max stack size
-    for (Material material : sortedMaterials) {
-      int totalAmount = materialCount.get(material);
-      int maxStackSize = material.getMaxStackSize();
+    for (ItemStack itemStack : sortedItems) {
+      int totalAmount = itemCount.get(itemStack);
+      int maxStackSize = itemStack.getMaxStackSize();
 
       // Continue creating stacks until all items are accounted for
       while (totalAmount > 0) {
@@ -88,11 +114,13 @@ public class Utility {
 
         // Check if we have space in combinedItems
         if (index < combinedItems.length) {
-          combinedItems[index] = new ItemStack(material, stackSize); // Initialize ItemStack
+          ItemStack newStack = itemStack.clone(); // Clone to preserve metadata
+          newStack.setAmount(stackSize);
+          combinedItems[index] = newStack;
           index++; // Increment index
         } else {
           // Log a warning if we hit the limit
-          System.err.println("Exceeded max combined items limit for material: " + material);
+          System.err.println("Exceeded max combined items limit for item: " + itemStack);
           break; // Prevent index out of bounds
         }
 
@@ -103,10 +131,31 @@ public class Utility {
     // Resize the array to remove nulls or empty slots
     combinedItems = Arrays.copyOf(combinedItems, index);
 
-    // Handle bottom-up arrangement if specified
-
     return combinedItems;
+  }
 
+  // Helper method to compare ItemStacks including their metadata
+  private static boolean areItemStacksEqual(ItemStack a, ItemStack b) {
+    if (a.getType() != b.getType()) return false;
+    if (a.hasItemMeta() && b.hasItemMeta()) {
+      ItemMeta metaA = a.getItemMeta();
+      ItemMeta metaB = b.getItemMeta();
+
+      // Compare display name
+      if (metaA.hasDisplayName() && metaB.hasDisplayName() && !Objects.equals(metaA.displayName(), metaB.displayName())) {
+        return false;
+      }
+
+      // Compare enchantments
+      if (!metaA.getEnchants().equals(metaB.getEnchants())) {
+        return false;
+      }
+
+      // Compare lore
+      return !metaA.hasLore() || !metaB.hasLore() || Objects.equals(metaA.lore(), metaB.lore());
+
+      // Add other metadata comparisons as needed (e.g. custom tags, etc.)
+    } else return !a.hasItemMeta() && !b.hasItemMeta(); // One has metadata, the other doesn't
   }
 
   public static void sort(Inventory inv) {

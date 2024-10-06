@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class TreeChop implements Listener {
+public class BlockBreaking implements Listener {
 
 
   @EventHandler
@@ -17,18 +17,13 @@ public class TreeChop implements Listener {
     Player p = event.getPlayer();
     if (Utility.isWood(b.getType())) {
       ItemStack stack = p.getInventory().getItemInMainHand();
-
-      if (Utility.isAxe(stack.getType())) {
-        Utility.destroyBranch(b, stack, false);
-      }
+      if (!b.isPreferredTool(stack)) return;
+      Utility.destroyBranch(p, b, false);
     }
     if (Utility.isVeinBlock(b.getType())) {
       ItemStack stack = p.getInventory().getItemInMainHand();
-
-
-      if (Utility.isPickaxe(stack.getType())) {
-        Utility.destroyBranch(b, stack, true);
-      }
+      if (!b.isPreferredTool(stack)) return;
+      Utility.destroyBranch(p, b, true);
     }
   }
 
