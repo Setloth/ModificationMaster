@@ -1,5 +1,5 @@
 name: ModificationMaster
-version: 1.3
+version: 1.4
 main: me.setloth.modificationMaster.ModificationMaster
 api-version: '1.21'
 authors: [ Setloth ]
@@ -7,3 +7,11 @@ commands:
   sort:
     usage: /sort [block]
     description: Sorts your inventory or the target chest
+  endchest:
+    usage: /e[nd(er)]c[hest]
+    aliases: [echest, enderchest, ec]
+    description: Opens your ender chest on the go!
+  craft:
+    usage: /[craft(ing) | workbench]
+    aliases: [crafting, workbench]
+    description: Open a crafting table anywhere!
