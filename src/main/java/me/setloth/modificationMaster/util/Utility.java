@@ -3,12 +3,12 @@ package me.setloth.modificationMaster.util;
 import java.util.*;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 public class Utility {
 
@@ -24,44 +24,36 @@ public class Utility {
   }
 
 
-  public static void destroyBranch(Player p, Block startBlock, boolean down) {
-    Material blockType = startBlock.getType();  // Type of block to match
-    Set<Block> visited = new HashSet<>();  // Tracks blocks we've already processed
-    Deque<Block> toVisit = new ArrayDeque<>();  // BFS queue to process blocks layer by layer (ArrayDeque is used for efficiency)
+  public static void destroyBranch(Player p, Block b, boolean down) {
+    Material branchType = b.getType();
+    final Queue<Block> blocksToDestroy = new LinkedList<>();
+    final Set<Block> processedBlocks = new HashSet<>();
+    blocksToDestroy.add(b);
 
-    // Initialize with the starting block
-    toVisit.add(startBlock);
-    visited.add(startBlock);
+    while (!blocksToDestroy.isEmpty()) {
+      Block currentBlock = blocksToDestroy.remove();
+      Material currentBlockType = currentBlock.getType();
 
-    while (!toVisit.isEmpty()) {
-      Block currentBlock = toVisit.poll();  // Remove and process the current block
+      if (processedBlocks.contains(currentBlock) || currentBlockType != branchType) continue;
 
-      // Ensure the block type still matches
-      if (!currentBlock.getType().equals(blockType)) continue;
+      processedBlocks.add(currentBlock);
 
-      // Try to break the block
-      boolean broken = p.breakBlock(currentBlock);
-      if (!broken) continue;  // If the block couldn't be broken, skip it
-
-      // Check all adjacent blocks within a 3x3x3 cube around the current block
       for (int x = -1; x <= 1; x++) {
-        for (int y = (down ? -1 : 0); y <= 1; y++) {  // If 'down' is true, check below
-          for (int z = -1; z <= 1; z++) {
-            // Skip the current block itself (x == 0, y == 0, z == 0)
-            if (x == 0 && y == 0 && z == 0) continue;
-
+        for (int z = -1; z <= 1; z++) {
+          for (int y = (down ? -1 : 0); y <= 1; y++) {
             Block neighbor = currentBlock.getRelative(x, y, z);
-
-            // If the neighbor is the same block type and hasn't been visited, add it to the deque
-            if (!visited.contains(neighbor) && neighbor.getType().equals(blockType)) {
-              toVisit.add(neighbor);  // Add to the end of the deque
-              visited.add(neighbor);  // Mark it as visited immediately to avoid re-adding it
+            if (neighbor.getType() == branchType) {
+              blocksToDestroy.add(neighbor);
             }
           }
         }
       }
+
+      currentBlock.breakNaturally(p.getInventory().getItemInMainHand());
+
     }
   }
+
 
   /**
    * Sorts and combines an array of ItemStacks.
@@ -69,7 +61,8 @@ public class Utility {
    * @param items      the ItemStack array to sort and combine
    * @return the sorted and combined ItemStack array
    */
-  @SuppressWarnings("all")
+
+@SuppressWarnings("all")
   public static ItemStack[] sortAndCombine(ItemStack[] items) {
     // Map to store item counts with metadata as the key
     Map<ItemStack, Integer> itemCount = new HashMap<>();
