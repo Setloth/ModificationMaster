@@ -25,6 +25,7 @@ public class Utility {
 
 
   public static void destroyBranch(Player p, Block b, boolean down) {
+
     Material branchType = b.getType();
     final Queue<Block> blocksToDestroy = new LinkedList<>();
     final Set<Block> processedBlocks = new HashSet<>();
@@ -49,7 +50,8 @@ public class Utility {
         }
       }
 
-      currentBlock.breakNaturally(p.getInventory().getItemInMainHand());
+      p.breakBlock(currentBlock);
+      //currentBlock.breakNaturally(p.getInventory().getItemInMainHand());
 
     }
   }

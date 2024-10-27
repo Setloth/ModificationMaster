@@ -3,12 +3,16 @@ package me.setloth.modificationMaster;
 import me.setloth.modificationMaster.commands.Craft;
 import me.setloth.modificationMaster.commands.EndChest;
 import me.setloth.modificationMaster.commands.Sort;
+import me.setloth.modificationMaster.commands.VeinToggle;
 import me.setloth.modificationMaster.listeners.BlockBreaking;
 import me.setloth.modificationMaster.util.VersionChecker;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 
 @SuppressWarnings("unused")
@@ -19,7 +23,29 @@ public final class ModificationMaster extends JavaPlugin {
     return INSTANCE;
   }
 
+  static HashMap<UUID, Boolean> veinToggled = new HashMap<>();
+  public static HashMap<UUID, Boolean> getVeinToggled() {
+    return veinToggled;
+  }
+
+  public static void toggleVeinPlayer(Player p) {
+    toggleVeinPlayer(p.getUniqueId());
+  }
+
+  public static void toggleVeinPlayer(UUID uuid) {
+    if (!veinToggled.containsKey(uuid)) {
+      veinToggled.put(uuid, true);
+    }
+
+    veinToggled.compute(uuid, (k, b) -> Boolean.FALSE.equals(b));
+  }
+
+  public static boolean isVeinToggled(Player p) {
+    return veinToggled.get(p.getUniqueId());
+  }
+
   @Override
+  @SuppressWarnings("all")
   public void onEnable() {
     INSTANCE = this;
     long start = System.currentTimeMillis();
@@ -44,6 +70,8 @@ public final class ModificationMaster extends JavaPlugin {
     Objects.requireNonNull(getServer().getPluginCommand("sort")).setTabCompleter(new Sort());
     Objects.requireNonNull(getServer().getPluginCommand("endchest")).setExecutor(new EndChest());
     Objects.requireNonNull(getServer().getPluginCommand("craft")).setExecutor(new Craft());
+    Objects.requireNonNull(getServer().getPluginCommand("veintoggle")).setExecutor(new VeinToggle());
+
 
     log("Done! Took: "+(System.currentTimeMillis()-start)+" ms");
 

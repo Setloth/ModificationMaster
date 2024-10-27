@@ -1,5 +1,5 @@
 name: ModificationMaster
-version: 1.4
+version: 1.5
 main: me.setloth.modificationMaster.ModificationMaster
 api-version: '1.21'
 authors: [ Setloth ]
@@ -15,3 +15,7 @@ commands:
     usage: /[craft(ing) | workbench]
     aliases: [crafting, workbench]
     description: Open a crafting table anywhere!
+  veintoggle:
+    usage: /veintoggle
+    aliases: [vt]
+
