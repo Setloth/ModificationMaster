@@ -1,6 +1,6 @@
 package me.setloth.modificationMaster.commands;
 
-import me.setloth.modificationMaster.ModificationMaster;
+import me.setloth.modificationMaster.util.VeinToggled;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,11 +11,9 @@ public class VeinToggle implements CommandExecutor {
   public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
     if (!(sender instanceof Player p)) return true;
 
-    ModificationMaster.toggleVeinPlayer(p);
-    boolean state = ModificationMaster.isVeinToggled(p);
+    VeinToggled.toggleVeinPlayer(p);
 
-    p.sendMessage("Vein mining is now "+(state ? "enabled" : "disabled"));
-
+    VeinToggled.statusMessage(p);
     return true;
   }
 }

@@ -1,16 +1,15 @@
 package me.setloth.modificationMaster.commands;
 
 import me.setloth.modificationMaster.util.Utility;
-import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Container;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,14 +25,14 @@ public class Sort implements CommandExecutor, TabCompleter {
     if (strings.length > 0 && strings[0].equalsIgnoreCase("block")) {
 
       // Use getTargetBlockExact to avoid issues with deprecated methods
-      Block b = p.getTargetBlockExact(100, FluidCollisionMode.NEVER);
+      Block b = p.getTargetBlockExact(100);
 
       if (b == null) return false;  // No block found within range
 
       BlockState bs = b.getState();
 
-      if (!(bs instanceof Container c)) return false;
-      inv = c.getInventory();
+      if (!(bs instanceof InventoryHolder ih)) return false;
+      inv = ih.getInventory();
     }
 
     Utility.sort(inv);

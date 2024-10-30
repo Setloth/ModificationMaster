@@ -1,5 +1,5 @@
 name: ModificationMaster
-version: 1.5
+version: 1.6
 main: me.setloth.modificationMaster.ModificationMaster
 api-version: '1.21'
 authors: [ Setloth ]

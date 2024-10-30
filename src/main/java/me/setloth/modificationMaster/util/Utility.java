@@ -15,7 +15,7 @@ public class Utility {
 
   public static boolean isWood(Material m) {
     String mstring = m.toString();
-    return mstring.endsWith("_LOG") && !mstring.startsWith("STRIPPED_");
+    return mstring.endsWith("_LOG");
   }
 
   public static boolean isVeinBlock(Material m) {
