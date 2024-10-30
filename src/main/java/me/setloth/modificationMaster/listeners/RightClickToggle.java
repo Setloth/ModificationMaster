@@ -1,5 +1,6 @@
 package me.setloth.modificationMaster.listeners;
 
+import me.setloth.modificationMaster.util.Utility;
 import me.setloth.modificationMaster.util.VeinToggled;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,9 +28,13 @@ public class RightClickToggle implements Listener {
     ItemStack stack = p.getInventory().getItemInMainHand();
     if (tb == null || !tb.isPreferredTool(stack)) return;
 
-    event.setCancelled(true); // prevent action consequence
-    VeinToggled.toggleVeinPlayer(event.getPlayer());
-    VeinToggled.statusMessage(event.getPlayer());
+    if (Utility.isWood(tb.getType()) || Utility.isVeinBlock(tb.getType())) { // only apply for
+      // vein-mine able blocks
+      event.setCancelled(true); // prevent action consequence
+      VeinToggled.toggleVeinPlayer(event.getPlayer());
+      VeinToggled.statusMessage(event.getPlayer());
+    }
+
 
   }
 
