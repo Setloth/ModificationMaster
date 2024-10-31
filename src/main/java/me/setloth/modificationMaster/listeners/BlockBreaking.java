@@ -1,7 +1,6 @@
 package me.setloth.modificationMaster.listeners;
 
-import me.setloth.modificationMaster.util.Utility;
-import me.setloth.modificationMaster.util.VeinToggled;
+import me.setloth.modificationMaster.util.VeinSystem;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,28 +15,24 @@ public class BlockBreaking implements Listener {
   public void onBlockBreak(BlockBreakEvent event) {
     Player p = event.getPlayer();
 
-    if (!VeinToggled.isVeinToggled(p)) return;
+    if (!VeinSystem.isVeinToggled(p)) return;
 
     Block b = event.getBlock();
     ItemStack stack = p.getInventory().getItemInMainHand();
 
     if (!b.isPreferredTool(stack)) return;
 
-    VeinToggled.toggleVeinPlayer(p);
+    VeinSystem.toggleVeinPlayer(p);
 
-    if (Utility.isWood(b.getType())) {
-      Utility.destroyBranch(p, b, false);
+    if (VeinSystem.isWood(b.getType())) {
+      VeinSystem.destroyBranch(p, b, false);
     }
-    if (Utility.isVeinBlock(b.getType())) {
-      Utility.destroyBranch(p, b, true);
+    if (VeinSystem.isOreBlock(b.getType())) {
+      VeinSystem.destroyBranch(p, b, true);
     }
 
-    VeinToggled.toggleVeinPlayer(p);
+    VeinSystem.toggleVeinPlayer(p);
   }
-
-
-
-
 
 
 }

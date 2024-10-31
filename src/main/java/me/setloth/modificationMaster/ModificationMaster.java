@@ -18,6 +18,18 @@ public final class ModificationMaster extends JavaPlugin {
 
   static ModificationMaster INSTANCE;
 
+  public static Plugin instance() {
+    return INSTANCE;
+  }
+
+  public static void log(String msg) {
+    log(msg, Level.INFO);
+  }
+
+  public static void log(String msg, Level level) {
+    INSTANCE.getLogger().log(level, msg);
+  }
+
   @Override
   @SuppressWarnings("all")
   public void onEnable() {
@@ -27,11 +39,12 @@ public final class ModificationMaster extends JavaPlugin {
     String ver = this.getPluginMeta().getVersion();
     String latestVer = VersionChecker.latestVersion();
 
-    log("Initializing plugin version "+ver);
+    log("Initializing plugin version " + ver);
     if (!ver.equals(latestVer)) {
-      log("\n\nPlugin is outdated!\nYour Version: "+ver+"\nLatest Version: "+latestVer+"\n\nFetch" +
-              " " +
-              "updates at https://github.com/Setloth/ModificationMaster\n\n", Level.WARNING);
+      log("\n\nPlugin is outdated!\nYour Version: " + ver + "\nLatest Version: " + latestVer + "\n\nFetch" +
+              " updates at https://github.com/Setloth/ModificationMaster\n\n", Level.WARNING);
+    } else {
+      log("\n\nPlugin is up to date at " + latestVer + "\n\nFetch updates at https://github.com/Setloth/ModificationMaster\n\n");
     }
 
     // Plugin startup logic
@@ -46,24 +59,12 @@ public final class ModificationMaster extends JavaPlugin {
     Objects.requireNonNull(getServer().getPluginCommand("craft")).setExecutor(new Craft());
     Objects.requireNonNull(getServer().getPluginCommand("veintoggle")).setExecutor(new VeinToggle());
 
-    log("Done! Took: "+(System.currentTimeMillis()-start)+" ms");
+    log("Done! Took: " + (System.currentTimeMillis() - start) + " ms");
   }
 
   @Override
   public void onDisable() {
     // Plugin shutdown logic
     log("Goodbye :(");
-  }
-
-  public static Plugin instance() {
-    return INSTANCE;
-  }
-
-  public static void log(String msg) {
-    log(msg, Level.INFO);
-  }
-
-  public static void log(String msg, Level level) {
-    INSTANCE.getLogger().log(level, msg);
   }
 }

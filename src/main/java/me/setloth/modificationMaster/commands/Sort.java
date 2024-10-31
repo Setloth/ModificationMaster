@@ -1,8 +1,10 @@
 package me.setloth.modificationMaster.commands;
 
-import me.setloth.modificationMaster.util.Utility;
+import me.setloth.modificationMaster.util.SortSystem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,11 +33,17 @@ public class Sort implements CommandExecutor, TabCompleter {
 
       BlockState bs = b.getState();
 
-      if (!(bs instanceof InventoryHolder ih)) return false;
-      inv = ih.getInventory();
+      if (bs instanceof InventoryHolder ih) {
+        if (ih instanceof DoubleChest dc) {
+          inv = dc.getInventory();
+        } else inv = ih.getInventory();
+
+      } else return false;
     }
 
-    Utility.sort(inv);
+    SortSystem.sort(inv);
+    p.sendMessage(inv.getType().defaultTitle().appendSpace().append(Component.text("has been " +
+            "sorted")));
 
     return true;
   }
