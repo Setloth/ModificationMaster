@@ -1,6 +1,6 @@
 package me.setloth.modificationMaster.commands;
 
-import me.setloth.modificationMaster.util.VeinSystem;
+import me.setloth.modificationMaster.systems.VeinSystem;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

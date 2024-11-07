@@ -1,6 +1,6 @@
 package me.setloth.modificationMaster.listeners;
 
-import me.setloth.modificationMaster.util.VeinSystem;
+import me.setloth.modificationMaster.systems.VeinSystem;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

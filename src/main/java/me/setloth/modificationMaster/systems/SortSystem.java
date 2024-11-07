@@ -1,4 +1,4 @@
-package me.setloth.modificationMaster.util;
+package me.setloth.modificationMaster.systems;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

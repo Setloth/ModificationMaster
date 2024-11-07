@@ -1,8 +1,9 @@
 name: ModificationMaster
-version: 1.7
+version: 1.8
 main: me.setloth.modificationMaster.ModificationMaster
 api-version: '1.21'
 authors: [ Setloth ]
+depend: [  ]
 commands:
   sort:
     usage: /sort [block]

@@ -6,6 +6,7 @@ import me.setloth.modificationMaster.commands.Sort;
 import me.setloth.modificationMaster.commands.VeinToggle;
 import me.setloth.modificationMaster.listeners.BlockBreaking;
 import me.setloth.modificationMaster.listeners.RightClickToggle;
+import me.setloth.modificationMaster.systems.PacketSystem;
 import me.setloth.modificationMaster.util.VersionChecker;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,6 +59,9 @@ public final class ModificationMaster extends JavaPlugin {
     Objects.requireNonNull(getServer().getPluginCommand("endchest")).setExecutor(new EndChest());
     Objects.requireNonNull(getServer().getPluginCommand("craft")).setExecutor(new Craft());
     Objects.requireNonNull(getServer().getPluginCommand("veintoggle")).setExecutor(new VeinToggle());
+
+    log("Registering Packet System");
+    PacketSystem.register();
 
     log("Done! Took: " + (System.currentTimeMillis() - start) + " ms");
   }

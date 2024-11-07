@@ -1,6 +1,6 @@
 package me.setloth.modificationMaster.commands;
 
-import me.setloth.modificationMaster.util.SortSystem;
+import me.setloth.modificationMaster.systems.SortSystem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
