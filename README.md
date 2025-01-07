@@ -48,7 +48,7 @@ Make sure to have the sorting system enabled in the configuration:
 
 ```yml
 System:
-...
+# ...
   sorting:
 # for inventory and chest sorting
     chest: true
@@ -66,7 +66,7 @@ Additionally, configure the system to your liking in the config:
 
 ```yml
 System:
-...
+# ...
   vein-mining:
     include: [.*_LOG, .*_ORE, .*_STEM] # edit at own risk!
     exclude: [ ] # disabled -> [*]
