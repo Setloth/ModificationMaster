@@ -11,7 +11,7 @@ A simple modification plugin!
 <!-- TOC -->
 
 ## [ShelfViewer](https://github.com/Setloth/ShelfViewer)
-The main functionality of this plugin is to provide a bridge between my Fabric MC mod [ShelfViewer](https://github.com/Setloth/ShelfViewer)
+The main functionality of this plugin is to provide a bridge between my Fabric MC mod [ShelfViewer](https://github.com/Setloth/ShelfViewer) and Bukkit MC Servers
 
 By installing this plugin on a Paper/SpigotMC 1.21.1+ server, you can access the benefits of a client-side mod on non-fabric servers!
 
