@@ -43,7 +43,7 @@ dependencies {
 }
 
 group = 'me.setloth'
-version = '1.8'
+version = '1.9'
 description = 'ModificationMaster'
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -53,4 +53,11 @@ tasks.withType(Javadoc).configureEach {
 
 tasks.assemble {
     paperweight.reobfArtifactConfiguration = ReobfArtifactConfiguration.getMOJANG_PRODUCTION()
+}
+
+jar {
+    destinationDirectory = file("/Users/sethweintraub/Desktop/Server/plugins/")
+
+    archiveBaseName = "ModificationMaster"
+    archiveExtension = "jar"
 }

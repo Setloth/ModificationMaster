@@ -1,5 +1,6 @@
 package me.setloth.modificationMaster.commands;
 
+import me.setloth.modificationMaster.systems.ConfigurationSystem;
 import me.setloth.modificationMaster.systems.SortSystem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
@@ -22,9 +23,27 @@ public class Sort implements CommandExecutor, TabCompleter {
   public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
     if (!(commandSender instanceof Player p)) return true;
 
+    if (!p.hasPermission("modificationmaster.sort")) {
+      p.sendMessage(Component.text("Insufficient permissions! Needs: modificationmaster.sort"));
+      return true;
+    }
+
+
+
     Inventory inv = p.getInventory();
 
     if (strings.length > 0 && strings[0].equalsIgnoreCase("block")) {
+
+      if (!p.hasPermission("modificationmaster.sort.block")) {
+        p.sendMessage(Component.text("Insufficient permissions! Needs: modificationmaster.sort.block"));
+        return true;
+      }
+
+      Boolean configEnabledSorting = ConfigurationSystem.CHEST_SORTING.value(Boolean.class);
+      if (Boolean.FALSE.equals(configEnabledSorting)) {
+        p.sendMessage(Component.text("Chest sorting is disabled in config, ask an admin to enable it!"));
+        return true;
+      }
 
       // Use getTargetBlockExact to avoid issues with deprecated methods
       Block b = p.getTargetBlockExact(100);
@@ -39,6 +58,12 @@ public class Sort implements CommandExecutor, TabCompleter {
         } else inv = ih.getInventory();
 
       } else return false;
+    }
+
+    Boolean configEnabledSorting = ConfigurationSystem.INVENTORY_SORTING.value(Boolean.class);
+    if (Boolean.FALSE.equals(configEnabledSorting)) {
+      p.sendMessage(Component.text("Inventory sorting is disabled in config, ask an admin to enable it!"));
+      return true;
     }
 
     SortSystem.sort(inv);

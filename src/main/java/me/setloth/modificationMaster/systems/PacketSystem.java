@@ -24,9 +24,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 
+import static me.setloth.modificationMaster.ModificationMaster.log;
+
 public class PacketSystem {
 
   public static void register() {
+
     Bukkit.getMessenger().registerOutgoingPluginChannel(ModificationMaster.instance(), NetworkingConstants.RESPONSE_BOOKSHELF_PACKET_ID.toString());
 
     Bukkit.getMessenger().registerIncomingPluginChannel(ModificationMaster.instance(), NetworkingConstants.REQUEST_BOOKSHELF_PACKET_ID.toString(), new MessageListener());

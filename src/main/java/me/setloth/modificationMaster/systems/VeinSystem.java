@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class VeinSystem {
 
@@ -57,6 +58,33 @@ public class VeinSystem {
     p.sendMessage(c);
   }
 
+  public static boolean isVeinBlock(Material m) {
+    ArrayList<?> includeList = ConfigurationSystem.INCLUDE_BLOCKS.value(ArrayList.class);
+    ArrayList<?> excludeList = ConfigurationSystem.EXCLUDE_BLOCKS.value(ArrayList.class);
+  
+    String materialStr = m.toString();
+  
+    // Check exclude patterns
+    if (excludeList != null) {
+      for (Object excludePattern : excludeList) {
+        if (excludePattern instanceof String && Pattern.compile((String) excludePattern, Pattern.CASE_INSENSITIVE).matcher(materialStr).matches()) {
+          return false;
+        }
+      }
+    }
+  
+    // Check include patterns
+    if (includeList != null) {
+      for (Object includePattern : includeList) {
+        if (includePattern instanceof String && Pattern.compile((String) includePattern, Pattern.CASE_INSENSITIVE).matcher(materialStr).matches()) {
+          return true;
+        }
+      }
+    }
+  
+    return false;
+  }
+  
   public static boolean isWood(Material m) {
     String mstring = m.toString();
     return mstring.endsWith("_LOG");
@@ -67,7 +95,7 @@ public class VeinSystem {
     return mstring.endsWith("_ORE");
   }
 
-  public static void destroyBranch(Player p, Block b, boolean down) {
+  public static void destroyBranch(Player p, Block b) {
 
     Material branchType = b.getType();
     final Queue<Block> blocksToDestroy = new LinkedList<>();
@@ -84,7 +112,7 @@ public class VeinSystem {
 
       for (int x = -1; x <= 1; x++) {
         for (int z = -1; z <= 1; z++) {
-          for (int y = (down ? -1 : 0); y <= 1; y++) {
+          for (int y = -1; y <= 1; y++) {
             Block neighbor = currentBlock.getRelative(x, y, z);
             if (neighbor.getType() == branchType) {
               blocksToDestroy.add(neighbor);

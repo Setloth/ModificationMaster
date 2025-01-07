@@ -1,14 +1,11 @@
 package me.setloth.modificationMaster;
 
-import me.setloth.modificationMaster.commands.Craft;
-import me.setloth.modificationMaster.commands.EndChest;
-import me.setloth.modificationMaster.commands.Sort;
-import me.setloth.modificationMaster.commands.VeinToggle;
+import me.setloth.modificationMaster.commands.*;
 import me.setloth.modificationMaster.listeners.BlockBreaking;
 import me.setloth.modificationMaster.listeners.RightClickToggle;
+import me.setloth.modificationMaster.systems.ConfigurationSystem;
 import me.setloth.modificationMaster.systems.PacketSystem;
 import me.setloth.modificationMaster.util.VersionChecker;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -19,7 +16,7 @@ public final class ModificationMaster extends JavaPlugin {
 
   static ModificationMaster INSTANCE;
 
-  public static Plugin instance() {
+  public static ModificationMaster instance() {
     return INSTANCE;
   }
 
@@ -48,6 +45,10 @@ public final class ModificationMaster extends JavaPlugin {
       log("\n\nPlugin is up to date at " + latestVer + "\n\nFetch updates at https://github.com/Setloth/ModificationMaster\n\n");
     }
 
+    log("Loading configuration...");
+
+    saveDefaultConfig();
+
     // Plugin startup logic
     log("Registering Events");
     getServer().getPluginManager().registerEvents(new BlockBreaking(), this);
@@ -59,9 +60,13 @@ public final class ModificationMaster extends JavaPlugin {
     Objects.requireNonNull(getServer().getPluginCommand("endchest")).setExecutor(new EndChest());
     Objects.requireNonNull(getServer().getPluginCommand("craft")).setExecutor(new Craft());
     Objects.requireNonNull(getServer().getPluginCommand("veintoggle")).setExecutor(new VeinToggle());
+    Objects.requireNonNull(getServer().getPluginCommand("reloadconfig")).setExecutor(new ReloadConfig());
 
     log("Registering Packet System");
-    PacketSystem.register();
+    Boolean configEnabledPackets = ConfigurationSystem.PACKETS.value(Boolean.class);
+
+    if (Boolean.TRUE.equals(configEnabledPackets)) PacketSystem.register();
+    else log("Packet System is disabled in config, skipping...");
 
     log("Done! Took: " + (System.currentTimeMillis() - start) + " ms");
   }
