@@ -1,18 +1,24 @@
+# A copy of the default configuration, as well as a configuration guide, can be found at: https://github.com/Setloth/ModificationMaster
+
 System:
   packets: true
-# needed for Shelf Viewer integration
+  # needed for Shelf Viewer integration
+  # please note that for this change to take effect, the server must restart or be (UNSAFELY) reloaded via /reload (NOT the Modification Master command /reloadconfig)
 
   sorting:
-# for inventory and chest sorting
+    # for inventory and chest sorting
     chest: true
     inventory: true
 
   vein-mining:
-    include: [.*_LOG, .*_ORE, .*_STEM] # edit at own risk!
-    exclude: [ ] # disabled -> [*]
-# what blocks to include or exclude in vein-mining, ReGex is allowed, case-insensitive!
+    include:
+      - .*_LOG
+      - .*_ORE
+      - .*_STEM
+    exclude: []
+    # what blocks to include or exclude in vein-mining, ReGex is allowed, case-insensitive!
 
-# to disable vein-mining entirely, set the exclude set to [*]
+    # to disable vein-mining entirely, set the exclude set to [.*]
 
     require-tool: true
-# if the correct tool, i.e. a pickaxe (for stone) or axe (for wood) should be required for vein-mining
+    # if the correct tool, i.e. a pickaxe (for stone) or axe (for wood) should be required for vein-mining

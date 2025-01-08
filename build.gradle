@@ -43,7 +43,7 @@ dependencies {
 }
 
 group = 'me.setloth'
-version = '1.9'
+version = '1.9.1'
 description = 'ModificationMaster'
 java.sourceCompatibility = JavaVersion.VERSION_21
 

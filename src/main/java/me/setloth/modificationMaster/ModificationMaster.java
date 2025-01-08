@@ -6,7 +6,10 @@ import me.setloth.modificationMaster.listeners.RightClickToggle;
 import me.setloth.modificationMaster.systems.ConfigurationSystem;
 import me.setloth.modificationMaster.systems.PacketSystem;
 import me.setloth.modificationMaster.util.VersionChecker;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.logging.Level;
@@ -20,6 +23,8 @@ public final class ModificationMaster extends JavaPlugin {
     return INSTANCE;
   }
 
+  public static FileConfiguration config() { return instance().getConfig(); }
+
   public static void log(String msg) {
     log(msg, Level.INFO);
   }
@@ -30,20 +35,25 @@ public final class ModificationMaster extends JavaPlugin {
 
   @Override
   @SuppressWarnings("all")
-  public void onEnable() {
+  public void onLoad() {
     INSTANCE = this;
-    long start = System.currentTimeMillis();
 
     String ver = this.getPluginMeta().getVersion();
     String latestVer = VersionChecker.latestVersion();
 
     log("Initializing plugin version " + ver);
     if (!ver.equals(latestVer)) {
-      log("\n\nPlugin is outdated!\nYour Version: " + ver + "\nLatest Version: " + latestVer + "\n\nFetch" +
-              " updates at https://github.com/Setloth/ModificationMaster\n\n", Level.WARNING);
+      log("Plugin is outdated!\nYour Version: " + ver + "\nLatest Version: " + latestVer + "\n\nFetch" +
+              " updates at https://github.com/Setloth/ModificationMaster\n", Level.WARNING);
     } else {
-      log("\n\nPlugin is up to date at " + latestVer + "\n\nFetch updates at https://github.com/Setloth/ModificationMaster\n\n");
+      log("Plugin is up to date at " + latestVer + "\n\nFetch updates at https://github.com/Setloth/ModificationMaster\n");
     }
+  }
+
+  @Override
+  @SuppressWarnings("all")
+  public void onEnable() {
+    long start = System.currentTimeMillis();
 
     log("Loading configuration...");
 
@@ -66,7 +76,11 @@ public final class ModificationMaster extends JavaPlugin {
     Boolean configEnabledPackets = ConfigurationSystem.PACKETS.value(Boolean.class);
 
     if (Boolean.TRUE.equals(configEnabledPackets)) PacketSystem.register();
-    else log("Packet System is disabled in config, skipping...");
+    else {
+      Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
+      Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
+      log("Packet System is disabled in config, skipping...");
+    }
 
     log("Done! Took: " + (System.currentTimeMillis() - start) + " ms");
   }
