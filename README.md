@@ -10,6 +10,10 @@ A simple modification plugin!
   * [End Chest & Craft](#end-chest--craft)
 <!-- TOC -->
 
+> [!TIP]
+> Use the `/reloadconfig` command to re-load the configuration into the plugin
+> Also make sure to save your `config.yml` once you have configured it
+
 ## [ShelfViewer](https://github.com/Setloth/ShelfViewer)
 The main functionality of this plugin is to provide a bridge between my Fabric MC mod [ShelfViewer](https://github.com/Setloth/ShelfViewer) and Bukkit MC Servers
 
@@ -26,6 +30,9 @@ System:
 If you wish to disable the system, set `packets: false`
 
 Once the system is enabled, and the plugin is running, the server will communicate with Shelf Viewer to make sure the mod gets the correct information!
+
+> [!WARNING]
+> The packet system will not automatically enable or disable if you use the `/reloadconfig` command, you must restart the server for the changes to take effect!
 
 Check out my [other repository](https://github.com/Setloth/ShelfViewer) for more information and downloads!
 
@@ -83,7 +90,8 @@ You can include [regex](https://en.wikipedia.org/wiki/Regular_expression) in ord
 
 The default configuration of `[.*_LOG, .*_ORE, .*_STEM]` ensures that all logs, ores and stems (nether trees) will be able to be vein-mined. 
 
-_**I advise strong caution while editing the list, if you include a block that is very common (stone, dirt, etc.) you WILL crash your server.**_
+> [!CAUTION]
+> If you include a block that is very common, like stone or dirt, you **WILL** crash your server if you attempt to vein-mine them
 
 You can exclude specific blocks or selections of blocks by including them (with regex support, as well) in the `exclude` list.
 The exclude list takes priority over the include list, so any block in that list will always be exlucded.
