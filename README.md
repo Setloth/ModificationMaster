@@ -75,7 +75,10 @@ Additionally, configure the system to your liking in the config:
 System:
 # ...
   vein-mining:
-    include: [.*_LOG, .*_ORE, .*_STEM] # edit at own risk!
+    include:
+      - .*_LOG,
+      - .*_ORE,
+      - .*_STEM] # edit at own risk!
     exclude: [ ] # disabled -> [*]
 # what blocks to include or exclude in vein-mining, ReGex is allowed, case-insensitive!
 
